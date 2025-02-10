@@ -15,3 +15,6 @@
 - startDate - 有效時間開始 (Start)
 - endDate - 有效時間結束 (End)
 - purpose - 需求目的及備註 (Purpose and Remarks)
+
+# python創建資料表與欄位
+> 請參考CreatDB_firewall
