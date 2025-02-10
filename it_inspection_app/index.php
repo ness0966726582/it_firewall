@@ -1,63 +1,31 @@
-<?php
-require_once 'config.php'; // 包含資料庫連線
-
-try {
-    // 查詢所有機房名稱，並取得機房名稱列表
-    $stmtRooms = $pdo->query("SELECT name FROM it_rooms");
-    $rooms = $stmtRooms->fetchAll(PDO::FETCH_ASSOC);
-
-    // 查詢所有員工名稱，並取得員工名稱列表
-    $stmtStaffs = $pdo->query("SELECT name FROM it_staff");
-    $staffs = $stmtStaffs->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    // 若發生錯誤，則輸出錯誤訊息並終止程式
-    die("資料庫查詢失敗：" . $e->getMessage());
-}
-?>
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>動態下拉選單</title>
-    <link rel="stylesheet" href="assets/styles.css"> <!-- 引入外部 CSS 樣式表 -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- 引入 jQuery -->
+    <title>Firewall Request Form</title>
+    <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-    <h1>機房巡檢紀錄</h1>
-    
-    <!-- 機房名稱選擇下拉選單 -->
-	<label for="name">選擇IT機房名稱：</label>
-    <select id="room_name">
-        <option value="">請選擇</option>
-        <?php foreach ($rooms as $room): ?>
-            <option value="<?= htmlspecialchars($room['name']) ?>">
-                <?= htmlspecialchars($room['name']) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-	<br>
-
-    <!-- 員工名稱選擇下拉選單 -->
-    <label for="staff_name">選擇IT員工名稱：</label>
-    <select id="staff_name">
-        <option value="">請選擇</option>
-        <?php foreach ($staffs as $staff): ?>
-            <option value="<?= htmlspecialchars($staff['name']) ?>">
-                <?= htmlspecialchars($staff['name']) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-	<br>
-	
-    <h2>待輸出的提取內容</h2>
-    <!-- 顯示選擇的機房資訊 -->
-    <p>ID：<span id="room_id">-</span></p>
-    <p>座標：<input type="text" id="room_coordinate" readonly></p>
-    <!-- 顯示選擇的員工工號 -->
-    <p>工號：<span id="work_id">-</span></p>
-
-    <script src="assets/script.js"></script> <!-- 引入外部 JavaScript 檔案 -->
+    <h1>Firewall Request Form</h1>
+    <form action="save_to_db.php" method="POST">
+        <label>申請單號:</label> <input type="text" name="ticketNumber" required><br>
+        <label>申請日期:</label> <input type="date" name="requestDate" required><br>
+        <label>申請部門:</label> <input type="text" name="requestDept" required><br>
+        <label>申請人:</label> <input type="text" name="requestName" required><br>
+        <label>核准人:</label> <input type="text" name="approvedBy"><br>
+        <label>來源:</label> <input type="text" name="source"><br>
+        <label>目標:</label> <input type="text" name="destination"><br>
+        <label>協議與端口:</label>
+        <input type="checkbox" name="protocol[]" value="TCP"> TCP
+        <input type="checkbox" name="protocol[]" value="UDP"> UDP
+        <input type="checkbox" name="protocol[]" value="ICMP"> ICMP
+        <input type="text" name="protocol[]" placeholder="Other"><br>
+        <label>有效時間開始:</label> <input type="date" name="startDate"><br>
+        <label>有效時間結束:</label> <input type="date" name="endDate"><br>
+        <label>需求目的及備註:</label> <textarea name="purpose"></textarea><br>
+        <button type="submit">提交</button>
+        <button type="reset">清除</button>
+    </form>
 </body>
 </html>
