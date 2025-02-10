@@ -120,7 +120,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td>
                         <button onclick="showPopup('edit', <?= $row['id'] ?>)">編輯</button>
                         <button onclick="showPopup('delete', <?= $row['id'] ?>)">刪除</button>
-                        <button onclick="alert('顯示：ID <?= $row['id'] ?>')">顯示</button>
+                        <button onclick="window.location.href='view.php?id=<?= $row['id'] ?>'">顯示</button>
                     </td>
                 </tr>
             <?php endforeach; ?>
