@@ -1,7 +1,0 @@
-/project-root
-│── config.php
-│── index.php
-│── fetch_data.php
-│── assets/
-│   ├── script.js
-│   └── styles.css
