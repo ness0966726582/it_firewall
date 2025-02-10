@@ -1,32 +1,41 @@
 <?php
-require_once 'config.php';
+header('Content-Type: application/json'); 
+header("Access-Control-Allow-Origin: *"); 
+header("Access-Control-Allow-Methods: GET"); 
 
-if (!isset($_GET['type']) || empty($_GET['type']) || !isset($_GET['name']) || empty($_GET['name'])) {
-    echo json_encode(["error" => "參數缺失"]);
-    exit;
-}
-
-$type = $_GET['type'];
-$name = $_GET['name'];
+$config = require 'config.php';
+$pdo = $config['pdo']; // 取得 PDO 連線物件
 
 try {
-    if ($type === 'room') {
-        $stmt = $pdo->prepare("SELECT id, coordinate FROM it_rooms WHERE name = :name");
-    } elseif ($type === 'staff') {
-        $stmt = $pdo->prepare("SELECT work_id FROM it_staff WHERE name = :name");
-    } else {
-        echo json_encode(["error" => "無效的類型"]);
-        exit;
+    $whereClauses = [];
+    $params = [];
+
+    if (!empty($_GET['ticket_number'])) {
+        $whereClauses[] = "ticket_number = :ticket_number";
+        $params[':ticket_number'] = $_GET['ticket_number'];
+    }
+    if (!empty($_GET['request_dept'])) {
+        $whereClauses[] = "request_dept = :request_dept";
+        $params[':request_dept'] = $_GET['request_dept'];
+    }
+    if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+        $whereClauses[] = "request_date BETWEEN :start_date AND :end_date";
+        $params[':start_date'] = $_GET['start_date'];
+        $params[':end_date'] = $_GET['end_date'];
     }
 
-    $stmt->execute(['name' => $name]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($result) {
-        echo json_encode($result);
-    } else {
-        echo json_encode(["error" => "找不到對應的資料"]);
+    $sql = "SELECT * FROM it_firewall_allow";
+    if (!empty($whereClauses)) {
+        $sql .= " WHERE " . implode(" AND ", $whereClauses);
     }
-} catch (PDOException $e) {
-    echo json_encode(["error" => "資料庫查詢失敗：" . $e->getMessage()]);
+    $sql .= " ORDER BY created_at DESC";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    echo json_encode(["status" => "success", "data" => $data], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+} catch (Exception $e) {
+    echo json_encode(["status" => "error", "message" => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 }
+?>
