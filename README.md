@@ -19,3 +19,9 @@
 # python創建資料表與欄位
 > 請參考CreatDB_firewall.py
 
+# 創建php作為輸入頁
+![image](https://github.com/user-attachments/assets/107e791b-38d2-4c9a-8443-6b84e2641cdc)
+
+# 成功寫入
+![image](https://github.com/user-attachments/assets/c305090e-1772-476d-96f9-7fe335fe4647)
+
