@@ -17,4 +17,5 @@
 - purpose - 需求目的及備註 (Purpose and Remarks)
 
 # python創建資料表與欄位
-> 請參考CreatDB_firewall
+> 請參考CreatDB_firewall.py
+
